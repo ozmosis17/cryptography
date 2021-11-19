@@ -2,29 +2,26 @@
 #'
 #' Decodes a text using the Metropolis algorithm.
 #'
-#' @importFrom dplyr '%>%'
-#'
 #' @param code An encoded .txt file. Make sure all letters within are lowercase.
-#' Decoded test will preserve periods (.).
+#' Coded text should have the ` character rather than spaces.
 #' @param iter Number of iterations to run the algorithm for.
-#' @param M The probability matrix of likely two-letter combinations.
+#' @param M The probability matrix of likely two-letter combinations. Defaults
+#' to a probability matrix using 2-27 to represent letters and 1 to represent
+#' the ` character.
 #'
 #' @return Decoded message in string form.
 #' @export
 #'
 #' @examples
-decoder <- function(code,iter,M) {
+#' decoder("data/encodedtext1.txt", iter = 5000)
+decoder <- function(code,iter = 10000, M = "data/letterprob.mat") {
   codetxt <- read.delim(code, header = FALSE, as.is = TRUE)$V1 %>%
     strsplit(split = "") %>%
     unlist()
 
-  codenum <- c(1:length(codetxt))
-  for (i in 1:length(codetxt)) {
-    codenum[i] <- lettertonum(codetxt[i])
-  }
+  codenum <- letter2num(codetxt)
 
-  letterprob <- R.matlab::readMat(M) %>%
-    unlist()
+  letterprob <- R.matlab::readMat(M)[[1]]
 
   key <- sample(27)
 
@@ -36,30 +33,32 @@ decoder <- function(code,iter,M) {
     }
 
     # swap two random values in key to create keymaybe
-    keymaybe <- replace(key, c(rand1, rand2), c(key[rand1], key[rand2]))
+    keymaybe <- replace(key, c(rand1, rand2), c(key[rand2], key[rand1]))
 
-    diff <- loglike(codenum, keymaybe, M) - loglike(codenum, key, M)
+    diff <- loglike(codenum, keymaybe, letterprob) - loglike(codenum, key, letterprob)
     if (diff > 0) {
       key <- keymaybe
     } else if (runif(1) < exp(diff)) {
       key <- keymaybe
     }
-
-    answer <- key[codenum] %>%
-      numtoletter()
   }
+  answer <- key[codenum] %>%
+    num2letter() %>%
+    paste0(collapse = '')
+
+  answer <- gsub("`", " ", answer)
+
+  return(answer)
 }
 
-#' Title
+#' Calculate the log-likelihood of this key based on probability matrix
 #'
-#' @param textnum
-#' @param y
-#' @param M
+#' @param textnum The encoded text, converted to a vector of chars
+#' @param y The key that you're testing
+#' @param M The probability matrix of likely two letter combinations
 #'
-#' @return
-#' @export
+#' @return The log-likelihood of this key
 #'
-#' @examples
 loglike <- function(textnum, y, M) {
   val = 0
   k = length(textnum)

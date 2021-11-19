@@ -10,10 +10,10 @@ num2letter(n)
 \item{n}{A vector of numbers from 1 to 27}
 }
 \value{
-A lowercase letter.
+A lowercase letter or `.
 }
 \description{
-Converts a number 1-26 to its corresponding letter, and converts 27 to " "
+Converts a number 2-27 to its corresponding letter, and converts 1 to "`"
 }
 \examples{
 num2letter(c(1,2,3,4,27))

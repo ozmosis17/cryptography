@@ -2,6 +2,4 @@
 
 export(decoder)
 export(letter2num)
-export(loglike)
 export(num2letter)
-importFrom(dplyr,'%>%')

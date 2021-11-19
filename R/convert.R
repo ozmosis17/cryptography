@@ -1,9 +1,9 @@
 #' Convert letter to number
 #'
 #' Converts a lowercase letter to its corresponding position in the alphabet
-#' (e.g. a -> 1, z -> 26). Converts " " to 27.
+#' plus one. (e.g. a -> 2, z -> 27). Converts "`" to 1.
 #'
-#' @param l A vector of lowercase letters.
+#' @param l A vector of lowercase letters and the character `.
 #'
 #' @return A vector of numbers from 1 to 27.
 #' @export
@@ -13,10 +13,10 @@
 letter2num <- function(l) {
   n <- c(1:length(l))
   for (i in 1:length(l)) {
-    if(l[i] == " ") {
-      n[i] <- 27
+    if(l[i] == "`") {
+      n[i] <- 1
     } else {
-      n[i] <- match(l[i],letters)
+      n[i] <- match(l[i],letters) + 1
     }
   }
   invisible(n)
@@ -24,11 +24,11 @@ letter2num <- function(l) {
 
 #' Converts number to letter
 #'
-#' Converts a number 1-26 to its corresponding letter, and converts 27 to " "
+#' Converts a number 2-27 to its corresponding letter, and converts 1 to "`"
 #'
 #' @param n A vector of numbers from 1 to 27
 #'
-#' @return A lowercase letter.
+#' @return A lowercase letter or `.
 #' @export
 #'
 #' @examples
@@ -38,10 +38,10 @@ num2letter <- function(n) {
   for (i in 1:length(n)) {
     if(n[i] > 27) {
       stop("Must be number from 1 to 27")
-    } else if(n[i] == 27) {
-      l[i] <- " "
+    } else if(n[i] == 1) {
+      l[i] <- "`"
     } else {
-      l[i] <- letters[n[i]]
+      l[i] <- letters[n[i] - 1]
     }
   }
   invisible(l)

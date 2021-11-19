@@ -2,16 +2,20 @@
 % Please edit documentation in R/decoder.R
 \name{loglike}
 \alias{loglike}
-\title{Title}
+\title{Calculate the log-likelihood of this key based on probability matrix}
 \usage{
 loglike(textnum, y, M)
 }
 \arguments{
-\item{M}{}
+\item{textnum}{The encoded text, converted to a vector of chars}
+
+\item{y}{The key that you're testing}
+
+\item{M}{The probability matrix of likely two letter combinations}
 }
 \value{
-
+The log-likelihood of this key
 }
 \description{
-Title
+Calculate the log-likelihood of this key based on probability matrix
 }

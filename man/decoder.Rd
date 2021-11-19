@@ -4,19 +4,24 @@
 \alias{decoder}
 \title{Text Decoder}
 \usage{
-decoder(code, iter, M)
+decoder(code, iter = 10000, M = "data/letterprob.mat")
 }
 \arguments{
 \item{code}{An encoded .txt file. Make sure all letters within are lowercase.
-Decoded test will preserve periods (.).}
+Coded text should have the ` character rather than spaces.}
 
 \item{iter}{Number of iterations to run the algorithm for.}
 
-\item{M}{The probability matrix of likely two-letter combinations.}
+\item{M}{The probability matrix of likely two-letter combinations. Defaults
+to a probability matrix using 2-27 to represent letters and 1 to represent
+the ` character.}
 }
 \value{
 Decoded message in string form.
 }
 \description{
 Decodes a text using the Metropolis algorithm.
+}
+\examples{
+decoder("data/encodedtext1.txt", iter = 5000)
 }

@@ -7,14 +7,14 @@
 letter2num(l)
 }
 \arguments{
-\item{l}{A vector of lowercase letters.}
+\item{l}{A vector of lowercase letters and the character `.}
 }
 \value{
 A vector of numbers from 1 to 27.
 }
 \description{
 Converts a lowercase letter to its corresponding position in the alphabet
-(e.g. a -> 1, z -> 26). Converts " " to 27.
+plus one. (e.g. a -> 2, z -> 27). Converts "`" to 1.
 }
 \examples{
 letter2num(c("h","e","l","l","o"))
