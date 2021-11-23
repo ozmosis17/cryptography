@@ -46,3 +46,23 @@ num2letter <- function(n) {
   }
   invisible(l)
 }
+
+#' Converts text with proper punctuation into text that is codable by converting
+#' uppercase to lowercase and removing punctuation
+#'
+#' @param text Text that you're trying to make codable
+#'
+#' @return text that is now codable
+#' @export
+#'
+#' @examples
+#' make_codable("Hello. My name is Oliver; what's your name?")
+make_codable <- function(text) {
+  codetext <- gsub(" ", "`", text) %>%
+    strsplit(split = "") %>%
+    unlist()
+
+  codetext <- codetext[!codetext %in% c(".", ",", ";", ":", "'", "-", "?", "!")]
+
+  ifelse(codetext == toupper(codetext), tolower(codetext), codetext)
+}

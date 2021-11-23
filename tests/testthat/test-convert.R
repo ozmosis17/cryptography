@@ -5,3 +5,7 @@ test_that("letter2num works", {
 test_that("num2letter works", {
   expect_equal(num2letter(c(1,2,3,4,27)), c("`","a","b","c","z"))
 })
+
+test_that("make_codable works", {
+  expect_equal(make_codable("A.b-'c?; D,e:!"), c("a","b","c","`","d","e"))
+})

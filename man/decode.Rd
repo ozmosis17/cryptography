@@ -4,17 +4,24 @@
 \alias{decode}
 \title{Text Decoder}
 \usage{
-decode(code, iter = 7000, M = NULL, key = NULL)
+decode(codetxt, iter = 7000, M = NULL, key = NULL)
 }
 \arguments{
-\item{code}{An encoded .txt file. Make sure all letters within are lowercase.
-Coded text should have the ` character rather than spaces.}
+\item{codetxt}{An encoded string of text}
 
 \item{iter}{Number of iterations to run the algorithm for.}
 
 \item{M}{A 27x27 probability matrix of likely two-letter combinations.
 Defaults to a probability matrix using 2-27 to represent letters and 1 to
 represent the ` character.}
+
+\item{key}{If the user already has the key to decode the encoded message,
+they can insert it here as a 1x27 vector of numbers where the index of the
+key is the number representing the coded letter and the value in the key is
+the number representing the decoded letter. Remember that a value of 1
+represents a ` or a space, and that 2-27 represent the letters in
+alphabetical order. For example, if "c"s in the code represent spaces, the
+4th entry of the key should be a 1.}
 }
 \value{
 Decoded message in string form.
@@ -23,5 +30,6 @@ Decoded message in string form.
 Decodes a text using the Metropolis algorithm.
 }
 \examples{
-decode("~/Documents/encodedtext1.txt", iter = 10000)
+decode("pkfiurxpkumuvghkgbsluhdimdc", iter = 10000, key =
+c(12,13,8,26,19,11,4,10,5,6,18,15,21,2,24,3,16,27,22,9,7,1,14,23,17,25,20))
 }

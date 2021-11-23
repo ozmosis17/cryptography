@@ -4,8 +4,7 @@
 #'
 #' @importFrom dplyr "%>%"
 #'
-#' @param code An encoded .txt file. Make sure all letters within are lowercase.
-#'   Coded text should have the ` character rather than spaces.
+#' @param codetxt An encoded string of text
 #' @param iter Number of iterations to run the algorithm for.
 #' @param M A 27x27 probability matrix of likely two-letter combinations.
 #'   Defaults to a probability matrix using 2-27 to represent letters and 1 to
@@ -21,48 +20,54 @@
 #' @export
 #'
 #' @examples
-#' decode("~/Documents/encodedtext1.txt", iter = 10000)
-decode <- function(code, iter = 7000, M = NULL, key = NULL) {
-  codetxt <- utils::read.delim(code, header = FALSE, as.is = TRUE)$V1 %>%
-    strsplit(split = "") %>%
-    unlist()
+#' decode("pkfiurxpkumuvghkgbsluhdimdc", iter = 10000, key =
+#' c(12,13,8,26,19,11,4,10,5,6,18,15,21,2,24,3,16,27,22,9,7,1,14,23,17,25,20))
+decode <- function(codetxt, iter = 7000, M = NULL, key = NULL) {
 
-  codenum <- letter2num(codetxt)
+  # if user does not provide a probability matrix, load the default one
+  # (is this necessary??)
+  if (is.null(M)){
+    utils::data("letterprob")
+  } else {
+    letterprob <- M
+  }
+
+  # convert input text into vector of individual characters
+  codenum <- strsplit(codetxt, split = "") %>%
+    unlist() %>%
+    letter2num()
 
   # if user doesn't provide a key and wants algorithm to figure it out
   if(is.null(key)) {
 
-    key <- sample(27)
+    key <- sample(27) # generate random key
 
     for (i in 1:iter) {
+
+      # swap two random values in key to create new (possibly better) key
       rand1 <- ceiling(stats::runif(1)*27)
       rand2 <- ceiling(stats::runif(1)*27)
       while (rand1 == rand2) {
         rand2 <- ceiling(stats::runif(1)*27)
       }
+      newkey <- replace(key, c(rand1, rand2), c(key[rand2], key[rand1]))
 
-      # swap two random values in key to create keymaybe
-      keymaybe <- replace(key, c(rand1, rand2), c(key[rand2], key[rand1]))
-
-      if (is.null(M)){
-        utils::data("letterprob")
-      } else {
-        letterprob <- M
-      }
-
-      diff <- loglike(codenum, keymaybe, letterprob) - loglike(codenum, key, letterprob)
+      # calculate which key is better
+      diff <- loglike(codenum, newkey, letterprob) - loglike(codenum, key, letterprob)
       if (diff > 0) {
-        key <- keymaybe
+        key <- newkey # overwrite old key if new key is better
       } else if (stats::runif(1) < exp(diff)) {
-        key <- keymaybe
+        key <- newkey
       }
     }
   }
 
+  # convert answer integer vector back into single character string
   answer <- key[codenum] %>%
     num2letter() %>%
     paste0(collapse = '')
 
+  # replace ` with spaces
   answer <- gsub("`", " ", answer)
 
   return(answer)
